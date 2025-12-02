@@ -105,12 +105,13 @@ function InventoryContent() {
       {/* Shows the CURRENT category name while scrolling */}
       <button 
         onClick={() => setIsMobileMenuOpen(true)}
+        suppressHydrationWarning={true}
         className="md:hidden fixed z-40 right-4 p-2 px-4 bg-[#00529b] text-white rounded-full shadow-lg hover:bg-blue-800 transition-all active:scale-95 flex items-center gap-2 border-2 border-white/20 backdrop-blur-sm"
         style={{ top: '120px' }} 
       >
-        <span className="text-xs font-bold whitespace-nowrap">
+        {/* <span className="text-xs font-bold whitespace-nowrap">
           {activeCategoryTitle} 
-        </span>
+        </span> */}
         <MenuIcon />
       </button>
       {/* ========================================= */}
