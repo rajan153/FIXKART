@@ -8,27 +8,28 @@ export const INVENTORY_DATA: Category[] = [
     title: "Fastening & Joining",
     slug: toSlug("Fastening & Joining"),
     items: [
-      { name: "Anchors", imagePath: "/fastening\\anchor.webp" },
       { name: "Bolts", imagePath: "/fastening\\bolts.webp" },
-      { name: "Cable Ties", imagePath: "/fastening\\cable-ties.jpg" },
-      { name: "Eyebolts", imagePath: "/fastening\\eyebolts.jpg" },
-      { name: "Helical Inserts", imagePath: "/fastening\\helical-inserts.jpg" },
-      { name: "Key Stock", imagePath: "/fastening\\keystock.jpg" },
-      { name: "Lanyards", imagePath: "/fastening\\lanyards.avif" },
-      { name: "Magnets", imagePath: "/fastening\\magnets.jpg" },
-      { name: "Nails", imagePath: "/fastening\\nails.jpg" },
-      { name: "Nuts" , imagePath: "/fastening\\nuts.jpg"},
-      { name: "Pins", imagePath: "/fastening\\pins.jpg" },
-      { name: "Retaining Rings", imagePath: "/fastening\\retaining-rings.jpg" },
-      { name: "Rivets", imagePath: "/fastening\\rivets.jpg" },
-      { name: "Screws", imagePath: "/fastening\\screws.jpg" },
-      { name: "Shims", imagePath: "/fastening\\shims.jpg" },
-      { name: "Spacers", imagePath: "/fastening\\spacers.jpg" },
-      { name: "Staples", imagePath: "/fastening\\staples.jpg" },
       { name: "Studs", imagePath: "/fastening\\studs.jpg" },
+      { name: "Anchors", imagePath: "/fastening\\anchor.webp" },
       { name: "Threaded Rods", imagePath: "/fastening\\threaded-rods.jpg" },
       { name: "U-Bolts", imagePath: "/fastening\\u-bolts.jpg" },
-      { name: "Washers", imagePath: "/fastening\\washers.jpg" }
+      { name: "Screws", imagePath: "/fastening\\screws.jpg" },
+      { name: "Nails", imagePath: "/fastening\\nails.jpg" },
+      { name: "Eyebolts", imagePath: "/fastening\\eyebolts.jpg" },
+      { name: "Nuts" , imagePath: "/fastening\\nuts.jpg"},
+      { name: "Washers", imagePath: "/fastening\\washers.jpg" },
+      { name: "Retaining Rings", imagePath: "/fastening\\retaining-rings.jpg" },
+      { name: "Staples", imagePath: "/fastening\\staples.jpg" },
+      { name: "Rivets", imagePath: "/fastening\\rivets.jpg" },
+      { name: "Pins", imagePath: "/fastening\\pins.jpg" },
+      { name: "Cable Ties", imagePath: "/fastening\\cable-ties.jpg" },    
+      { name: "Key Stock", imagePath: "/fastening\\keystock.jpg" },
+      { name: "Magnets", imagePath: "/fastening\\magnets.jpg" },
+      { name: "Spacers", imagePath: "/fastening\\spacers.jpg" },
+      { name: "Shims", imagePath: "/fastening\\shims.jpg" },
+      { name: "Helical Inserts", imagePath: "/fastening\\helical-inserts.jpg" },
+      { name: "Lanyards", imagePath: "/fastening\\lanyards.avif" },
+      { name: "Clamps", imagePath: "/handtools/clamps.webp" },
     ]
   },
   {
@@ -62,7 +63,9 @@ export const INVENTORY_DATA: Category[] = [
     { name: "Power Tool Replacement Parts", imagePath: "/power-tools\\replacement-parts.webp" },
     { name: "Rotary Tools, Oscillating Tools & Cut-Out Tools", imagePath: "/power-tools\\rotary-oscillating.jpg" },
     { name: "Woodturning Lathes", imagePath: "/power-tools\\lathes.webp" },
-    { name: "Wood Dust Collection & Air Filtration", imagePath: "/power-tools\\dust-collection.webp" }
+    { name: "Wood Dust Collection & Air Filtration", imagePath: "/power-tools\\dust-collection.webp" },
+    { name: "Cold Blowers", imagePath: "/heating&cooling/blowers.webp" },
+
   ]
 },
 
@@ -182,7 +185,7 @@ export const INVENTORY_DATA: Category[] = [
     title: "Hand Tools",
     slug: toSlug("Hand Tools"),
     items: [
-      { name: "Clamps", imagePath: "/handtools/clamps.webp" }, // Example
+       // Example
       { name: "Crimpers", imagePath: "/handtools/crimpers.jpg" },
       { name: "Files", imagePath: "/handtools/files.avif" },
       { name: "Hammers", imagePath: "/handtools/hammer.webp" }, // Example
@@ -220,7 +223,6 @@ export const INVENTORY_DATA: Category[] = [
     slug: toSlug("Heating & Cooling"),
     items: [
       { name: "Air Conditioners", imagePath: "/heating&cooling/ac.avif" },
-      { name: "Blowers", imagePath: "/heating&cooling/blowers.webp" },
       { name: "Chillers", imagePath: "/heating&cooling/chillers.jpg" },
       { name: "Ducting", imagePath: "/heating&cooling/ducting.jpg" },
       { name: "Fans", imagePath: "/heating&cooling/fans.webp" },
@@ -369,7 +371,7 @@ export const INVENTORY_DATA: Category[] = [
     items: [
       { name: "Chain", imagePath: "/pulling-lifting/chain.jpg" },
       { name: "Clamps", imagePath: "/pulling-lifting/clamps.jpg" },
-      { name: "Eye Bolts", imagePath: "/pulling-lifting/eye-bolts.webp" },
+      // { name: "Eye Bolts", imagePath: "/pulling-lifting/eye-bolts.webp" },
       { name: "Hoists", imagePath: "/pulling-lifting/hoists.jpeg" },
       { name: "Hooks", imagePath: "/pulling-lifting/hooks.avif" },
       { name: "Rope", imagePath: "/pulling-lifting/rope.jpg" },
@@ -471,7 +473,12 @@ export const INVENTORY_DATA: Category[] = [
       { name: "Threaded Rod", imagePath: "/suspending/threaded-rod.jpg" },
       { name: "Wire Rope", imagePath: "/suspending/wire-rope.webp" }
     ]
-  }
+  },
+   {
+    title: "Welding",
+    slug: toSlug("Welding"),
+    items: []
+   }
 ];
 
 // Helper to get simple list of names for the Sidebar
