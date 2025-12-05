@@ -2,6 +2,37 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import Product from "../models/Product";
 import Vendor from "../models/Vendor";
+import mongoose from "mongoose";
+
+// Helper: resilient vendor lookup that supports Clerk user ids and ObjectIds
+const findVendorByAuthUser = async (authUser: any) => {
+  const clerkUserId =
+    authUser?.userId || authUser?.id || authUser?.sub || authUser;
+  if (!clerkUserId) return null;
+
+  // 1) direct match (user stored as string)
+  let v = await Vendor.findOne({ user: clerkUserId });
+  if (v) return v;
+
+  // 2) try clerk-specific field (if vendor documents store clerk id)
+  v = await Vendor.findOne({ clerkId: clerkUserId });
+  if (v) return v;
+
+  console.log("Chl raha hai");
+  // 3) try as ObjectId
+  if (mongoose.Types.ObjectId.isValid(clerkUserId)) {
+    try {
+      v = await Vendor.findOne({
+        user: new mongoose.Types.ObjectId(clerkUserId),
+      });
+      if (v) return v;
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  return null;
+};
 
 // @access  Private (Vendor)
 export const createProduct = async (req: Request, res: Response) => {
@@ -12,22 +43,26 @@ export const createProduct = async (req: Request, res: Response) => {
   }
 
   try {
-    console.log(
-      "Create Product Request Body:",
-      JSON.stringify(req.body, null, 2)
-    );
-    // Get vendor profile
-    const vendor = await Vendor.findOne({ user: (req as any).user!.userId });
-    if (!vendor) {
-      console.log(
-        "Vendor profile not found for user:",
-        (req as any).user!.userId
-      );
-      res.status(403).json({
-        message: "Vendor profile not found. Please complete onboarding.",
-      });
-      return;
-    }
+    // console.log(
+    //   "Create Product Request Body:",
+    //   JSON.stringify(req.body, null, 2)
+    // );
+    // Get vendor profile using resilient lookup (supports Clerk user id)
+    const clerkUserId =
+      (req as any).user?.userId ||
+      (req as any).user?.id ||
+      (req as any).user?.sub;
+
+    // const vendor = (req as any).user;
+    // const vendor = await findVendorByAuthUser((req as any).user);
+
+    // if (!vendor) {
+    //   console.log("Vendor profile not found for clerk user:", clerkUserId);
+    //   res.status(403).json({
+    //     message: "Vendor profile not found. Please complete onboarding.",
+    //   });
+    //   return;
+    // }
 
     const {
       name,
@@ -42,7 +77,7 @@ export const createProduct = async (req: Request, res: Response) => {
     } = req.body;
 
     const product = new Product({
-      vendor: vendor._id,
+      vendor: clerkUserId,
       name,
       description,
       category,
@@ -87,24 +122,24 @@ export const getProducts = async (req: Request, res: Response) => {
 
     let query: any = {};
 
-    if (scope === "vendor" && role === "vendor") {
-      const vendor = await Vendor.findOne({ user: userId });
-      if (vendor) {
-        query.vendor = vendor._id;
-        // Vendor can see all their products regardless of status
-        if (status) query.status = status;
-      }
-    } else if (role !== "admin") {
-      query.status = "active";
-      query.isActive = true;
-    } else if (status) {
-      // Admin can filter by status
-      query.status = status;
-    }
+    // if (scope === "vendor" && role === "vendor") {
+    //   const vendor = await findVendorByAuthUser(userId);
+    //   if (vendor) {
+    //     query.vendor = vendor._id;
+    //     // Vendor can see all their products regardless of status
+    //     if (status) query.status = status;
+    //   }
+    // } else if (role !== "admin") {
+    //   query.status = "active";
+    //   query.isActive = true;
+    // } else if (status) {
+    //   // Admin can filter by status
+    //   query.status = status;
+    // }
 
-    if (keyword) {
-      query.$text = { $search: keyword as string };
-    }
+    // if (keyword) {
+    //   query.$text = { $search: keyword as string };
+    // }
 
     if (category) {
       query.category = category;
@@ -165,7 +200,7 @@ export const getProductById = async (req: Request, res: Response) => {
 // @access  Private (Vendor)
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const vendor = await Vendor.findOne({ user: (req as any).user!.userId });
+    const vendor = await findVendorByAuthUser((req as any).user);
     if (!vendor) {
       res.status(403).json({ message: "Not authorized" });
       return;
@@ -200,7 +235,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 // @access  Private (Vendor)
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
-    const vendor = await Vendor.findOne({ user: (req as any).user!.userId });
+    const vendor = await findVendorByAuthUser((req as any).user);
     if (!vendor) {
       res.status(403).json({ message: "Not authorized" });
       return;
