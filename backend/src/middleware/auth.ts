@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "@clerk/express";
 
 export interface AuthRequest extends Request {
   user?: any;
+  auth?: any;
 }
 
-export const authenticate = (
+// Clerk authentication middleware
+export const authenticate = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
@@ -16,20 +18,25 @@ export const authenticate = (
     res.status(401).json({ error: "No token provided" });
     return;
   }
-
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    // Verify Clerk token
+    const decoded = await verifyToken(token, {
+      secretKey: process.env.CLERK_SECRET_KEY,
+    });
+
     req.user = decoded;
+    req.auth = decoded;
     next();
   } catch (error) {
+    console.error("Token verification error:", error);
     res.status(401).json({ error: "Invalid or expired token" });
     return;
   }
 };
 
-export const optionalAuthenticate = (
+export const optionalAuthenticate = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
@@ -44,18 +51,29 @@ export const optionalAuthenticate = (
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    // Verify Clerk token
+    const decoded = await verifyToken(token, {
+      secretKey: process.env.CLERK_SECRET_KEY,
+    });
+
     req.user = decoded;
+    req.auth = decoded;
     next();
   } catch (error) {
     // If token is invalid, just proceed as guest
+    console.warn("Optional token verification failed:", error);
     next();
   }
 };
 
 export const authorize = (roles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
-    if (!req.user || !roles.includes(req.user.role)) {
+    console.log("AAGYA AUTH ME", req.user.role);
+    if (
+      !req.user.role ||
+      !req.user.metadata?.role ||
+      !roles.includes(req.user.metadata.role)
+    ) {
       res.status(403).json({ error: "Access denied" });
       return;
     }
